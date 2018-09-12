@@ -7,7 +7,7 @@ def logistic_regression_iterate(samples, alpha, w): # w = b, w1, w2, ..., wd
     yn = []  # ^y(n)
     deltaw = np.array([0] * (dim + 1))
     for sample in samples:
-        x = np.array([1] + sample[0])
+        x = np.array([1] + list(sample[0]))
         # calculate sig(wTx) = ^ywtn
         pr = logistic_sigmoid(x.dot(w))
         yn.append(pr)
@@ -43,20 +43,20 @@ def logistic_regression(samples, alpha, iterate_times):
 
 # arr = [ [[0],0],[[1],0],[[2],1], [[1.8],1], [[5],1] , [[1.4], 0] , [[1.9], 0]]
 
-arr = [
-    [[1, 1], 0],
-    [[1, 2], 0],
-    [[1, 3], 0],
-    [[2, 2], 0],
-    [[2, 3], 0],
-    [[3, 4], 0],
-    [[3, 1], 1],
-    [[4, 1], 1],
-    [[6, 1], 1],
-    [[5, 2], 1],
-    [[6, 3], 1]
-]
-logistic_regression(arr, 1, 10000)
+# arr = [
+#     [[1, 1], 0],
+#     [[1, 2], 0],
+#     [[1, 3], 0],
+#     [[2, 2], 0],
+#     [[2, 3], 0],
+#     [[3, 4], 0],
+#     [[3, 1], 1],
+#     [[4, 1], 1],
+#     [[6, 1], 1],
+#     [[5, 2], 1],
+#     [[6, 3], 1]
+# ]
+# logistic_regression(arr, 1, 10000)
 
 
 # x = np.array([3,4])
