@@ -1,64 +1,41 @@
 import math
 import numpy as np
-# [ [[x1,x2,...,xn],y],[[x1,x2,...,xn],y],[[x1,x2,...,xn],y],... ]
-def logistic_regression_iterate(samples, alpha, w): # w = b, w1, w2, ..., wd
-    N = len(samples)  # sample count
-    dim = len(samples[0][0])  # dimension
-    yn = []  # ^y(n)
-    deltaw = np.array([0] * (dim + 1))
-    for sample in samples:
-        x = np.array([1] + list(sample[0]))
-        # calculate sig(wTx) = ^ywtn
-        pr = logistic_sigmoid(x.dot(w))
-        yn.append(pr)
+import random
+import time
 
-        # calculate xn * (yn - ^ywt(n))
-        deltaw = deltaw + (sample[1] - pr) * x
-    deltaw = deltaw * alpha / N
+# x : [ [x1,x2,...,xd], [x1,x2,...,xd], ..., [x1,x2,...,xd] ]
+# y : [y1,y2,y3,...,yN]
+# weight : [b, w1, w2, ..., wd]
+def logistic_regression(sample_x, sample_y, learning_rate, epoch, batch_size):
+    N = len(sample_x)  # sample count
+    dim = len(sample_x[0])  # dimension
+    weight = np.zeros(dim + 1)
+    extended_x = np.hstack((np.ones((N, 1)), sample_x))
 
-    sum = 0
-    for i in range(N):
-        loss_single = samples[i][1] * math.log2(yn[i]) + (1 - samples[i][1]) * math.log2(1 - yn[i])
-        sum = sum + loss_single
-    loss = (-1) / N * sum
-    print("loss: " + str(loss))
+    for i in range(epoch):
+        random_index = random.sample(range(N), N)
+        iterations = [random_index[i : i + batch_size] for i in range(0, N - batch_size + 1, batch_size)]
+        for iterate in iterations:
+            delta_weight = np.zeros(dim + 1)
+            mat_x = [extended_x[index] for index in iterate]
+            mat_y = [sample_y[index] for index in iterate]
+            #mat_x is (batch_size * dim+1) and weight is (1 * dim+1)
 
-    return w + deltaw
+            pr = [logistic_sigmoid(h) for h in np.transpose(np.matmul(mat_x, np.transpose(weight)))]
+
+            for i in range(batch_size):
+                delta_weight += (mat_y[i]-pr[i]) * mat_x[i] * learning_rate / batch_size
+            weight += delta_weight
+    return weight
+
+    # sum = 0
+    # for (y, ye) in zip(sample_y, yn):
+    #     loss_single = y * math.log2(ye) + (1 - y) * math.log2(1 - ye)
+    #     sum += loss_single
+    # loss = (-1) / N * sum
+    # print("loss: " + str(loss))
 
 
 def logistic_sigmoid(x):
     e = math.exp(-x)
     return 1/(1+e)
-
-
-def logistic_regression(samples, alpha, iterate_times):
-    dim = len(samples[0][0])  # dimension
-    w0 = np.array([0] * (dim+1))
-    w = w0
-    for iterate_count in range(iterate_times):
-        print("Iterate: " + str(iterate_count))
-        w = logistic_regression_iterate(samples, alpha, w)
-        print(w)
-    print("Finished!")
-
-# arr = [ [[0],0],[[1],0],[[2],1], [[1.8],1], [[5],1] , [[1.4], 0] , [[1.9], 0]]
-
-# arr = [
-#     [[1, 1], 0],
-#     [[1, 2], 0],
-#     [[1, 3], 0],
-#     [[2, 2], 0],
-#     [[2, 3], 0],
-#     [[3, 4], 0],
-#     [[3, 1], 1],
-#     [[4, 1], 1],
-#     [[6, 1], 1],
-#     [[5, 2], 1],
-#     [[6, 3], 1]
-# ]
-# logistic_regression(arr, 1, 10000)
-
-
-# x = np.array([3,4])
-# y = np.array([5,6])
-# print(x.dot(y))
