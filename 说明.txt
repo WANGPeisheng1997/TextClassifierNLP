@@ -1,0 +1,8 @@
+read_and_write.py 负责完成读写
+logistic_regression.py 负责进行iteration（梯度下降和loss计算）
+train.py 负责通过bow/ngram生成词向量及模型测试评估
+test.py 最外层的入口，负责分析超参数对模型性能的影响
+
+通过调用test.py中的test(learning_rate, epoch, batch_size, is_Ngram=False, generate_csv=False)来进行测试
+is_Ngram为false时采用bag-of-words模型，为true时采用ngram模型
+generate_csv为false时只在验证集上计算正确率，并保存模型，为true时会生成测试集的结果，用于上传kaggle
